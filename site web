@@ -1,0 +1,526 @@
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { 
+  Sparkles, 
+  TrendingUp, 
+  Clock, 
+  CheckCircle2, 
+  ArrowRight,
+  Zap,
+  Shield,
+  Target,
+  ChevronDown
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+
+export default function Home() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  const stagger = {
+    visible: {
+      transition: {
+        staggerChildren: 0.15
+      }
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-pink-50">
+      
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <img 
+              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695c01dcd272dfa23bf165c1/ac26ff5bc_Capturedcran2026-01-05181527.png" 
+              alt="Widiia Logo" 
+              className="h-10"
+            />
+          </div>
+          <Button 
+            className="bg-gradient-to-r from-blue-900 to-blue-700 hover:from-blue-800 hover:to-blue-600 text-white shadow-lg shadow-blue-900/20"
+          >
+            Diagnostic Gratuit
+          </Button>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 px-6 lg:px-12">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            initial="hidden"
+            animate={isVisible ? "visible" : "hidden"}
+            variants={stagger}
+            className="text-center max-w-4xl mx-auto"
+          >
+            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-2 bg-pink-100 text-blue-900 rounded-full text-sm font-medium mb-8">
+              <Sparkles className="w-4 h-4" />
+              Automatisation IA sur mesure
+            </motion.div>
+            
+            <motion.h1 
+              variants={fadeInUp}
+              className="text-5xl lg:text-7xl font-bold text-slate-900 mb-6 leading-tight"
+            >
+              Libérez le potentiel de{' '}
+              <span className="bg-gradient-to-r from-blue-900 via-blue-700 to-pink-500 bg-clip-text text-transparent">
+                votre entreprise
+              </span>
+            </motion.h1>
+            
+            <motion.p 
+              variants={fadeInUp}
+              className="text-xl lg:text-2xl text-slate-600 mb-10 leading-relaxed"
+            >
+              Nous créons des systèmes d'automatisation IA qui vous font économiser du temps et de l'argent, 
+              pour que vous puissiez vous concentrer sur ce qui compte vraiment.
+            </motion.p>
+            
+            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button 
+                size="lg"
+                className="bg-gradient-to-r from-blue-900 to-blue-700 hover:from-blue-800 hover:to-blue-600 text-white text-lg px-8 py-6 shadow-2xl shadow-blue-900/30 hover:shadow-blue-900/40 transition-all"
+              >
+                Obtenir mon diagnostic gratuit
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline"
+                className="border-2 border-slate-300 text-slate-700 hover:bg-slate-50 text-lg px-8 py-6"
+              >
+                Découvrir notre processus
+                <ChevronDown className="ml-2 w-5 h-5" />
+              </Button>
+            </motion.div>
+          </motion.div>
+
+          {/* Stats */}
+          <motion.div 
+            initial={{ opacity: 0, y: 40 }}
+            animate={isVisible ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.6 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 max-w-5xl mx-auto"
+          >
+            {[
+              { value: '40%', label: 'Économie de temps moyenne', icon: Clock },
+              { value: '€25k+', label: 'Économies annuelles moyennes', icon: TrendingUp },
+              { value: '100%', label: 'Satisfaction client', icon: CheckCircle2 }
+            ].map((stat, index) => (
+              <Card key={index} className="p-6 text-center border-slate-200 bg-white/60 backdrop-blur hover:shadow-xl transition-all">
+                <stat.icon className="w-8 h-8 mx-auto mb-3 text-blue-900" />
+                <div className="text-4xl font-bold text-blue-900 mb-2">{stat.value}</div>
+                <div className="text-slate-600">{stat.label}</div>
+              </Card>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Problem Section */}
+      <section className="py-20 px-6 lg:px-12 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-6">
+              Votre entreprise perd un temps précieux
+            </h2>
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+              Tâches répétitives, processus manuels, ressources gaspillées... 
+              Il est temps de libérer votre équipe pour qu'elle se concentre sur la croissance.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {[
+              {
+                title: 'Tâches répétitives chronophages',
+                description: 'Votre équipe passe des heures sur des tâches qui pourraient être automatisées',
+                color: 'from-red-50 to-red-100'
+              },
+              {
+                title: 'Coûts opérationnels élevés',
+                description: 'Les processus manuels coûtent cher et freinent votre croissance',
+                color: 'from-orange-50 to-orange-100'
+              },
+              {
+                title: 'Erreurs humaines fréquentes',
+                description: 'La saisie manuelle génère des erreurs qui vous coûtent temps et argent',
+                color: 'from-amber-50 to-amber-100'
+              },
+              {
+                title: 'Manque de temps pour l\'essentiel',
+                description: 'Votre équipe ne peut pas se concentrer sur les tâches à forte valeur ajoutée',
+                color: 'from-yellow-50 to-yellow-100'
+              }
+            ].map((problem, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Card className={`p-6 border-l-4 border-slate-300 bg-gradient-to-br ${problem.color} hover:shadow-lg transition-all`}>
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">{problem.title}</h3>
+                  <p className="text-slate-700">{problem.description}</p>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Process Section */}
+      <section className="py-20 px-6 lg:px-12 bg-gradient-to-br from-blue-950 to-blue-900 text-white">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+              Notre processus en 3 étapes
+            </h2>
+            <p className="text-xl text-blue-200 max-w-3xl mx-auto">
+              Une méthode éprouvée pour transformer votre entreprise avec l'intelligence artificielle
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                step: '01',
+                title: 'Diagnostic Gratuit',
+                description: 'Nous analysons vos processus pour identifier les opportunités d\'automatisation. Sans engagement, sans frais.',
+                icon: Target,
+                color: 'from-pink-500 to-pink-400'
+              },
+              {
+                step: '02',
+                title: 'Conception Personnalisée',
+                description: 'Nous créons votre solution sur mesure, en collaboration étroite avec vous pour répondre à vos besoins spécifiques.',
+                icon: Sparkles,
+                color: 'from-blue-500 to-blue-400'
+              },
+              {
+                step: '03',
+                title: 'Déploiement & Formation',
+                description: 'Nous mettons en place votre système et formons votre équipe pour une adoption réussie et des résultats immédiats.',
+                icon: Zap,
+                color: 'from-purple-500 to-purple-400'
+              }
+            ].map((step, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.15 }}
+                className="relative"
+              >
+                <Card className="p-8 bg-white/10 backdrop-blur border-white/20 hover:bg-white/15 transition-all h-full">
+                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${step.color} mb-6`}>
+                    <step.icon className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="text-5xl font-bold text-white/20 mb-4">{step.step}</div>
+                  <h3 className="text-2xl font-bold mb-4">{step.title}</h3>
+                  <p className="text-blue-100 leading-relaxed">{step.description}</p>
+                </Card>
+                {index < 2 && (
+                  <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
+                    <ArrowRight className="w-8 h-8 text-white/30" />
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section className="py-20 px-6 lg:px-12">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-6">
+              Les bénéfices concrets pour votre entreprise
+            </h2>
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+              L'automatisation IA n'est pas l'avenir, c'est le présent. Découvrez ce qu'elle peut faire pour vous.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              {
+                icon: Clock,
+                title: 'Gain de temps massif',
+                description: 'Libérez jusqu\'à 40% du temps de votre équipe pour les tâches stratégiques',
+                gradient: 'from-blue-900 to-blue-700'
+              },
+              {
+                icon: TrendingUp,
+                title: 'Réduction des coûts',
+                description: 'Économisez des milliers d\'euros chaque année en optimisant vos processus',
+                gradient: 'from-pink-500 to-pink-400'
+              },
+              {
+                icon: Zap,
+                title: 'Efficacité maximale',
+                description: 'Des processus plus rapides, plus précis et disponibles 24h/24',
+                gradient: 'from-purple-600 to-purple-500'
+              },
+              {
+                icon: CheckCircle2,
+                title: 'Zéro erreur',
+                description: 'Éliminez les erreurs humaines et améliorez la qualité de votre travail',
+                gradient: 'from-green-600 to-green-500'
+              },
+              {
+                icon: Target,
+                title: 'Focus sur l\'essentiel',
+                description: 'Concentrez-vous sur la croissance et l\'innovation, pas sur les tâches répétitives',
+                gradient: 'from-orange-600 to-orange-500'
+              },
+              {
+                icon: Shield,
+                title: 'Avantage concurrentiel',
+                description: 'Prenez de l\'avance sur vos concurrents avec la technologie IA',
+                gradient: 'from-cyan-600 to-cyan-500'
+              }
+            ].map((benefit, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.08 }}
+              >
+                <Card className="p-6 hover:shadow-2xl transition-all border-slate-200 bg-white h-full group">
+                  <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${benefit.gradient} mb-4 group-hover:scale-110 transition-transform`}>
+                    <benefit.icon className="w-7 h-7 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900 mb-3">{benefit.title}</h3>
+                  <p className="text-slate-600 leading-relaxed">{benefit.description}</p>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison Table */}
+      <section className="py-20 px-6 lg:px-12 bg-slate-900">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
+              Pourquoi choisir Widiia ?
+            </h2>
+            <p className="text-xl text-slate-400 max-w-3xl mx-auto">
+              Comparaison avec les autres solutions du marché
+            </p>
+          </motion.div>
+
+          <div className="overflow-x-auto">
+            <div className="inline-block min-w-full align-middle">
+              <div className="grid grid-cols-5 gap-4">
+                {/* Header Row */}
+                <div className="bg-slate-800 rounded-2xl p-6"></div>
+                <div className="bg-slate-800/50 rounded-2xl p-6 text-center">
+                  <div className="text-slate-400 text-lg font-medium mb-2">FREELANCE</div>
+                  <div className="text-red-400 text-3xl font-bold">✕</div>
+                </div>
+                <div className="bg-slate-800/50 rounded-2xl p-6 text-center">
+                  <div className="text-slate-400 text-lg font-medium mb-2">RECRUTEMENT</div>
+                  <div className="text-red-400 text-3xl font-bold">✕</div>
+                </div>
+                <div className="bg-slate-800/50 rounded-2xl p-6 text-center">
+                  <div className="text-slate-400 text-lg font-medium mb-2">AUTRES AGENCES</div>
+                  <div className="text-red-400 text-3xl font-bold">✕</div>
+                </div>
+                <div className="bg-gradient-to-br from-blue-900 to-blue-700 rounded-2xl p-6 text-center border-2 border-pink-500 shadow-lg shadow-pink-500/20">
+                  <div className="text-white text-lg font-medium mb-2">NOUS</div>
+                  <div className="text-green-400 text-3xl font-bold">✓</div>
+                </div>
+
+                {/* Coût mensuel */}
+                <div className="bg-slate-800 rounded-2xl p-6 flex items-center">
+                  <span className="text-slate-300 font-medium text-lg">Coût mensuel</span>
+                </div>
+                <div className="bg-slate-800/30 rounded-2xl p-6 flex items-center justify-center">
+                  <span className="text-slate-400 text-center">+ 7 000 €</span>
+                </div>
+                <div className="bg-slate-800/30 rounded-2xl p-6 flex items-center justify-center">
+                  <span className="text-slate-400 text-center">+ 10 000 €</span>
+                </div>
+                <div className="bg-slate-800/30 rounded-2xl p-6 flex items-center justify-center">
+                  <span className="text-slate-400 text-center">À partir de 10 000 €</span>
+                </div>
+                <div className="bg-gradient-to-br from-blue-900/30 to-blue-700/30 rounded-2xl p-6 flex items-center justify-center border border-blue-700/50">
+                  <span className="text-blue-400 font-bold text-center">30 à 70% d'économies</span>
+                </div>
+
+                {/* Délai de démarrage */}
+                <div className="bg-slate-800 rounded-2xl p-6 flex items-center">
+                  <span className="text-slate-300 font-medium text-lg">Délai de démarrage</span>
+                </div>
+                <div className="bg-slate-800/30 rounded-2xl p-6 flex items-center justify-center">
+                  <span className="text-slate-400 text-center">Jours/semaines</span>
+                </div>
+                <div className="bg-slate-800/30 rounded-2xl p-6 flex items-center justify-center">
+                  <span className="text-slate-400 text-center">Semaines/mois</span>
+                </div>
+                <div className="bg-slate-800/30 rounded-2xl p-6 flex items-center justify-center">
+                  <span className="text-slate-400 text-center">Semaines/mois</span>
+                </div>
+                <div className="bg-gradient-to-br from-blue-900/30 to-blue-700/30 rounded-2xl p-6 flex items-center justify-center border border-blue-700/50">
+                  <span className="text-blue-400 font-bold text-center">Quelques heures</span>
+                </div>
+
+                {/* Première livraison */}
+                <div className="bg-slate-800 rounded-2xl p-6 flex items-center">
+                  <span className="text-slate-300 font-medium text-lg">Première livraison</span>
+                </div>
+                <div className="bg-slate-800/30 rounded-2xl p-6 flex items-center justify-center">
+                  <span className="text-slate-400 text-center">Plusieurs semaines</span>
+                </div>
+                <div className="bg-slate-800/30 rounded-2xl p-6 flex items-center justify-center">
+                  <span className="text-slate-400 text-center">Plusieurs semaines</span>
+                </div>
+                <div className="bg-slate-800/30 rounded-2xl p-6 flex items-center justify-center">
+                  <span className="text-slate-400 text-center">Plusieurs semaines</span>
+                </div>
+                <div className="bg-gradient-to-br from-pink-500/30 to-pink-400/30 rounded-2xl p-6 flex items-center justify-center border border-pink-500/50">
+                  <span className="text-pink-400 font-bold text-center">1 à 2 semaines</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Section */}
+      <section className="py-20 px-6 lg:px-12 bg-gradient-to-br from-pink-50 to-blue-50">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center"
+          >
+            <Shield className="w-16 h-16 mx-auto mb-6 text-blue-900" />
+            <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-6">
+              Notre engagement envers vous
+            </h2>
+            <div className="grid md:grid-cols-3 gap-8 mt-12">
+              {[
+                { title: 'Diagnostic 100% gratuit', description: 'Sans engagement, sans frais cachés' },
+                { title: 'Solutions sur mesure', description: 'Adaptées à vos besoins spécifiques' },
+                { title: 'Support continu', description: 'Nous restons à vos côtés après le déploiement' }
+              ].map((item, index) => (
+                <Card key={index} className="p-6 bg-white border-slate-200">
+                  <CheckCircle2 className="w-10 h-10 text-green-600 mx-auto mb-4" />
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
+                  <p className="text-slate-600">{item.description}</p>
+                </Card>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 px-6 lg:px-12 bg-gradient-to-br from-blue-950 via-blue-900 to-blue-800">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl lg:text-6xl font-bold text-white mb-6">
+              Prêt à transformer votre entreprise ?
+            </h2>
+            <p className="text-xl text-blue-200 mb-10 leading-relaxed">
+              Obtenez votre diagnostic gratuit et découvrez comment l'automatisation IA 
+              peut révolutionner votre façon de travailler.
+            </p>
+            <Button 
+              size="lg"
+              className="bg-gradient-to-r from-pink-500 to-pink-400 hover:from-pink-400 hover:to-pink-300 text-white text-lg px-12 py-7 shadow-2xl shadow-pink-500/40 hover:shadow-pink-500/60 transition-all"
+            >
+              Demander mon diagnostic gratuit
+              <ArrowRight className="ml-3 w-6 h-6" />
+            </Button>
+            <p className="text-blue-300 mt-6 text-sm">
+              ✓ Sans engagement • ✓ Réponse sous 24h • ✓ 100% personnalisé
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-slate-900 text-white py-12 px-6 lg:px-12">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div className="md:col-span-2">
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/695c01dcd272dfa23bf165c1/ac26ff5bc_Capturedcran2026-01-05181527.png" 
+                alt="Widiia Logo" 
+                className="h-12 mb-4 brightness-200"
+              />
+              <p className="text-slate-400 max-w-md">
+                Widiia est votre partenaire de confiance pour l'automatisation par intelligence artificielle. 
+                Nous aidons les entreprises à gagner en efficacité et en rentabilité.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">Services</h4>
+              <ul className="space-y-2 text-slate-400">
+                <li>Diagnostic gratuit</li>
+                <li>Automatisation IA</li>
+                <li>Solutions sur mesure</li>
+                <li>Formation & support</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">Contact</h4>
+              <ul className="space-y-2 text-slate-400">
+                <li>agence@widiia.fr</li>
+                <li>+33 X XX XX XX XX</li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-slate-800 pt-8 text-center text-slate-500">
+            <p>&copy; 2024 Widiia. Tous droits réservés.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
