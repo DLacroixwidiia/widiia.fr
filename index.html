@@ -1,146 +1,983 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Widiia - Agence d'Automatisation IA</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .backdrop-blur-xl { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
-        .bg-gradient-pink { background: linear-gradient(to right, #ec4899, #f43f5e); }
-        .text-gradient { background: linear-gradient(to right, #f472b6, #fb7185); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    </style>
-</head>
-<body class="bg-[#020617] text-white selection:bg-pink-500/30">
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  MessageSquare, 
+  TrendingUp, 
+  Mail, 
+  ShieldCheck, 
+  Phone, 
+  Mail as MailIcon, 
+  Menu, 
+  X, 
+  ArrowRight,
+  Zap,
+  Cpu,
+  Search,
+  Code2,
+  Rocket,
+  ChevronDown,
+  ExternalLink
+} from 'lucide-react';
 
-    <header class="fixed top-0 left-0 right-0 z-50 bg-[#020617]/80 backdrop-blur-xl border-b border-slate-800/50">
-        <nav class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-pink flex items-center justify-center shadow-lg shadow-pink-500/20">
-                        <span class="text-white font-bold text-xl">W</span>
-                    </div>
-                    <span class="text-2xl font-bold tracking-tight">Widiia</span>
-                </div>
+// --- Configuration des Agents ---
+const AGENTS = [
+  {
+    id: 'sav',
+    title: 'Agent SAV',
+    icon: <MessageSquare className="w-8 h-8" />,
+    description: "L'IA qui transforme chaque plainte en une expérience client mémorable.",
+    details: "Nos agents SAV gèrent les réclamations, répondent aux questions fréquentes et escaladent les problèmes complexes. Réduction des coûts de support de 60%."
+  },
+  {
+    id: 'prospection',
+    title: 'Agent de Prospection',
+    icon: <TrendingUp className="w-8 h-8" />,
+    description: "Une machine de guerre commerciale qui chasse 24h/24 sans jamais se fatiguer.",
+    details: "Analyse des bases de données, envoi de messages personnalisés et prise de rendez-vous avec les prospects qualifiés uniquement."
+  },
+  {
+    id: 'commande-mail',
+    title: 'Agent Commande Mail',
+    icon: <Mail className="w-8 h-8" />,
+    description: "L'automatisation ultime du back-office. Du mail au CRM en une seconde.",
+    details: "Extraction automatique des données de commandes reçues par email et injection directe dans votre système de gestion sans aucune erreur humaine."
+  }
+];
 
-                <div class="hidden md:flex items-center gap-8">
-                    <a href="#" class="text-sm font-medium text-pink-400">Accueil</a>
-                    <a href="#" class="text-sm font-medium text-slate-400 hover:text-white transition-colors">Nos Agents</a>
-                    <a href="#" class="text-sm font-medium text-slate-400 hover:text-white transition-colors">Contact</a>
-                </div>
+const App = () => {
+  const [currentPage, setCurrentPage] = useState('home');
+  const [selectedAgent, setSelectedAgent] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-                <div class="hidden md:block">
-                    <a href="#" class="bg-gradient-pink hover:opacity-90 text-white px-6 py-2.5 rounded-full text-sm font-semibold flex items-center gap-2 transition-all">
-                        Diagnostic gratuit
-                        <i class="fa-solid fa-arrow-right text-xs"></i>
-                    </a>
-                </div>
-            </div>
-        </nav>
-    </header>
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    const handleMouseMove = (e) => setMousePos({ x: e.clientX, y: e.clientY });
+    
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
 
-    <main class="pt-32 pb-20">
+  const Logo = ({ className = "w-10 h-10" }) => (
+    <div className={`${className} relative group`}>
+      <div className="absolute inset-0 bg-blue-500 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+      <img 
+        src="image_986a0a.png" 
+        alt="Widiia Logo" 
+        className="w-full h-full object-contain relative z-10 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12"
+      />
+    </div>
+  );
+
+  const Navbar = () => (
+    <nav className={`fixed w-full z-[100] transition-all duration-700 ${scrollY > 50 ? 'py-4 bg-black/80 backdrop-blur-2xl border-b border-white/5' : 'py-10 bg-transparent'}`}>
+      <div className="max-w-[1800px] mx-auto px-10 flex justify-between items-center">
+        <div className="flex items-center cursor-pointer group" onClick={() => setCurrentPage('home')}>
+          <Logo className="w-14 h-14 mr-4" />
+          <div className="flex flex-col">
+            <span className="text-3xl font-black tracking-[0.3em] text-white leading-none group-hover:text-blue-500 transition-colors">WIDIIA</span>
+            <span className="text-[9px] tracking-[0.6em] text-blue-400/60 font-bold uppercase">Neural Intelligence</span>
+          </div>
+        </div>
         
-        <section class="max-w-7xl mx-auto px-6 text-center mb-20">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-pink-500/30 bg-pink-500/5 text-pink-400 text-xs font-medium mb-8">
-                <span class="relative flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
-                </span>
-                Nos solutions IA
+        <div className="hidden lg:flex items-center space-x-16">
+          {['home', 'agents', 'contact'].map((page) => (
+            <button 
+              key={page}
+              onClick={() => setCurrentPage(page)} 
+              className="relative py-2 group overflow-hidden"
+            >
+              <span className={`text-[11px] tracking-[0.4em] uppercase font-black transition-all ${currentPage === page ? 'text-white' : 'text-white/40 group-hover:text-white'}`}>
+                {page === 'home' ? '// GENESIS' : page === 'agents' ? '// THE FLEET' : '// CONTACT'}
+              </span>
+              <span className={`absolute bottom-0 left-0 h-[2px] bg-blue-500 transition-all duration-500 ${currentPage === page ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+            </button>
+          ))}
+          <button 
+            onClick={() => setCurrentPage('contact')}
+            className="group relative px-10 py-4 bg-white text-black font-black text-[10px] tracking-[0.4em] uppercase rounded-none transition-all hover:bg-blue-600 hover:text-white overflow-hidden"
+          >
+            <span className="relative z-10">UPGRADE NOW</span>
+            <div className="absolute inset-0 bg-blue-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+          </button>
+        </div>
+
+        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden text-white">
+          {isMenuOpen ? <X size={32} /> : <Menu size={32} />}
+        </button>
+      </div>
+    </nav>
+  );
+
+  const HomePage = () => (
+    <div className="relative bg-black select-none">
+      {/* Dynamic Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div 
+          className="absolute w-[80vw] h-[80vw] bg-blue-600/10 rounded-full blur-[180px] transition-transform duration-1000 ease-out"
+          style={{ 
+            transform: `translate(${mousePos.x / 15}px, ${mousePos.y / 15}px)`,
+            top: '-20%',
+            right: '-10%'
+          }}
+        ></div>
+        <div 
+          className="absolute w-[60vw] h-[60vw] bg-pink-600/5 rounded-full blur-[150px] transition-transform duration-1000 ease-out"
+          style={{ 
+            transform: `translate(${-mousePos.x / 20}px, ${-mousePos.y / 20}px)`,
+            bottom: '-10%',
+            left: '-10%'
+          }}
+        ></div>
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-overlay"></div>
+      </div>
+
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none opacity-[0.03] select-none">
+          <h2 className="text-[25vw] font-black leading-none tracking-tighter">WIDIIA</h2>
+        </div>
+
+        <div className="max-w-[1800px] mx-auto px-10 z-10 grid lg:grid-cols-12 gap-10 items-center">
+          <div className="lg:col-span-7">
+            <div className="flex items-center space-x-4 mb-10">
+              <div className="h-[1px] w-20 bg-blue-500/50"></div>
+              <span className="text-[10px] font-black tracking-[0.8em] text-blue-400 uppercase">Beyond Automation</span>
             </div>
-            <h1 class="text-5xl md:text-7xl font-bold mb-8 tracking-tight">
-                Nos <span class="text-gradient">Agents IA</span>
+            <h1 className="text-[clamp(3rem,8vw,10rem)] font-black text-white leading-[0.85] tracking-tighter mb-12">
+              L'IA QUI <br />
+              <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-100 to-white animate-gradient-x">TRANSCENDE.</span>
             </h1>
-            <p class="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed">
-                Découvrez notre gamme d'agents intelligents conçus pour automatiser et optimiser chaque aspect de votre relation client.
+            <p className="text-xl md:text-2xl text-white/40 max-w-xl mb-16 font-light leading-relaxed">
+              WIDIIA fusionne l'ingénierie cognitive et le design d'élite pour créer des agents qui redéfinissent la productivité mondiale.
             </p>
-        </section>
-
-        <section class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            <div class="group bg-slate-900/40 border border-slate-800 p-8 rounded-[2rem] hover:border-pink-500/50 transition-all duration-300">
-                <div class="bg-blue-500/10 w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-headset text-blue-400 text-2xl"></i>
+            <div className="flex items-center space-x-12">
+              <button 
+                onClick={() => setCurrentPage('contact')}
+                className="group relative flex items-center space-x-6"
+              >
+                <div className="w-20 h-20 rounded-full border border-white/20 flex items-center justify-center group-hover:scale-110 group-hover:border-blue-500 transition-all duration-500">
+                  <ArrowRight size={32} className="group-hover:translate-x-2 transition-transform" />
                 </div>
-                <span class="bg-pink-500/10 text-pink-400 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Populaire</span>
-                <h3 class="text-2xl font-bold mt-4 mb-4">Agent SAV</h3>
-                <p class="text-slate-400 text-sm leading-relaxed mb-6">Gérez votre service après-vente 24h/24 avec un agent IA capable de résoudre les problèmes courants et d'escalader intelligemment.</p>
-                <ul class="space-y-3 text-sm text-slate-500">
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-pink-500"></i> Réponses instantanées</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-pink-500"></i> Suivi des livraisons</li>
-                </ul>
+                <span className="text-sm font-black tracking-[0.5em] uppercase">Initialiser</span>
+              </button>
+            </div>
+          </div>
+          
+          <div className="lg:col-span-5 relative flex justify-center">
+            <div className="relative w-full max-w-lg aspect-square">
+                <div className="absolute inset-0 bg-blue-500/20 blur-[120px] rounded-full animate-pulse"></div>
+                <img 
+                    src="image_986a0a.png" 
+                    alt="Logo Core" 
+                    className="w-full h-full object-contain relative z-10 animate-float brightness-110 contrast-125" 
+                />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] border border-white/5 rounded-full animate-spin-slow"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] border border-white/10 rounded-full animate-spin-reverse-slow"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* The Master Process Section - High Contrast */}
+      <section className="py-60 relative z-10">
+        <div className="max-w-[1800px] mx-auto px-10">
+          <div className="grid lg:grid-cols-12 gap-20 items-start">
+            <div className="lg:col-span-5 sticky top-40">
+              <h2 className="text-[clamp(3rem,6vw,8rem)] font-black text-white uppercase tracking-tighter leading-[0.9] mb-10">
+                L'ART DE <br /><span className="text-blue-500">L'ALGORITHME</span>
+              </h2>
+              <div className="w-40 h-[2px] bg-gradient-to-r from-blue-600 to-transparent mb-10"></div>
+              <p className="text-white/40 text-xl font-light leading-relaxed max-w-md">
+                Chaque agent est une pièce unique, sculptée selon les besoins spécifiques de votre infrastructure digitale.
+              </p>
             </div>
 
-            <div class="group bg-slate-900/40 border border-slate-800 p-8 rounded-[2rem] hover:border-pink-500/50 transition-all duration-300">
-                <div class="bg-emerald-500/10 w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-bullseye text-emerald-400 text-2xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold mb-4">Agent de Prospection</h3>
-                <p class="text-slate-400 text-sm leading-relaxed mb-6">Automatisez votre prospection commerciale avec un agent qui qualifie vos leads et prend les rendez-vous à votre place.</p>
-                <ul class="space-y-3 text-sm text-slate-500">
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-pink-500"></i> Qualification automatique</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-pink-500"></i> Envoi de messages personnalisés</li>
-                </ul>
-            </div>
-
-            <div class="group bg-slate-900/40 border border-slate-800 p-8 rounded-[2rem] hover:border-pink-500/50 transition-all duration-300">
-                <div class="bg-purple-500/10 w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-envelope-open-text text-purple-400 text-2xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold mb-4">Prise de Commande Mail</h3>
-                <p class="text-slate-400 text-sm leading-relaxed mb-6">Transformez vos emails en commandes automatiquement. L'agent analyse, extrait et traite les demandes reçues.</p>
-                <ul class="space-y-3 text-sm text-slate-500">
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-pink-500"></i> Analyse automatique des emails</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-pink-500"></i> Extraction des données</li>
-                </ul>
-            </div>
-
-        </section>
-    </main>
-
-    <footer class="bg-[#020617] border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
-            <div class="grid md:grid-cols-4 gap-12">
-                <div class="md:col-span-2">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-pink flex items-center justify-center">
-                            <span class="text-white font-bold text-xl">W</span>
-                        </div>
-                        <span class="text-2xl font-bold text-white">Widiia</span>
+            <div className="lg:col-span-7 space-y-32">
+              <div className="relative group">
+                <div className="absolute -inset-10 bg-blue-600/10 blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                <div className="relative overflow-hidden rounded-[4rem] border border-white/10 bg-slate-900 shadow-2xl">
+                    <img 
+                        src="image_995e11.png" 
+                        alt="Processus Widiia" 
+                        className="w-full h-auto scale-110 group-hover:scale-100 transition-transform duration-1000 brightness-75 hover:brightness-100"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex flex-col justify-end p-16">
+                        <span className="text-blue-400 font-black tracking-[0.5em] uppercase text-[10px] mb-4">Neural Map v2.1</span>
+                        <h3 className="text-4xl font-black text-white uppercase tracking-tighter">Vision Systémique</h3>
                     </div>
-                    <p class="text-slate-400 max-w-sm leading-relaxed">
-                        Nous créons des agents IA sur-mesure pour automatiser et améliorer votre relation client.
-                    </p>
                 </div>
-                <div>
-                    <h3 class="text-white font-semibold mb-6">Navigation</h3>
-                    <ul class="space-y-4 text-sm">
-                        <li><a href="#" class="text-slate-400 hover:text-pink-400 transition-colors">Accueil</a></li>
-                        <li><a href="#" class="text-slate-400 hover:text-pink-400 transition-colors">Nos Agents</a></li>
-                        <li><a href="#" class="text-slate-400 hover:text-pink-400 transition-colors">Contact</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-white font-semibold mb-6">Contact</h3>
-                    <ul class="space-y-4 text-sm text-slate-400">
-                        <li>contact@widiia.com</li>
-                        <li>+33 1 23 45 67 89</li>
-                    </ul>
-                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-10">
+                {[
+                  { title: "Audit Immersif", desc: "Immersion totale dans votre workflow pour identifier les goulots d'étranglement invisibles." },
+                  { title: "Déploiement Quantique", desc: "Mise en service ultra-rapide avec une scalabilité sans limites." }
+                ].map((item, i) => (
+                  <div key={i} className="p-10 bg-white/5 border border-white/5 rounded-[3rem] hover:border-blue-500/30 transition-all duration-500 group">
+                    <div className="w-12 h-12 bg-blue-500 rounded-2xl mb-8 flex items-center justify-center group-hover:rotate-[360deg] transition-transform duration-700">
+                      <Zap size={24} />
+                    </div>
+                    <h4 className="text-2xl font-black text-white mb-4 uppercase tracking-tighter">{item.title}</h4>
+                    <p className="text-white/40 leading-relaxed font-light">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div class="mt-16 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-slate-500 text-[13px]">
-                    © 2026 Widiia. Tous droits réservés.
-                </p>
-                <div class="flex gap-8 text-[13px] text-slate-500">
-                    <a href="#" class="hover:text-pink-400 transition-colors">Mentions légales</a>
-                    <a href="#" class="hover:text-pink-400 transition-colors">Confidentialité</a>
-                </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Fleet Section - Grid Non-Conventionnel */}
+      <section className="py-60 relative bg-white/5 overflow-hidden">
+        <div className="max-w-[1800px] mx-auto px-10 relative z-10">
+            <div className="mb-40">
+                <span className="text-blue-500 font-black tracking-[1em] uppercase text-[10px] block mb-6">Units Available</span>
+                <h2 className="text-[clamp(3rem,8vw,12rem)] font-black text-white uppercase tracking-tighter leading-none outline-text">LA FLOTTE.</h2>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-4">
+                {AGENTS.map((agent, i) => (
+                    <div 
+                        key={agent.id}
+                        onClick={() => { setSelectedAgent(agent); setCurrentPage('agent-detail'); }}
+                        className={`group relative h-[700px] overflow-hidden bg-slate-950 border border-white/5 hover:border-blue-500/50 transition-all duration-700 cursor-pointer ${i === 1 ? 'md:-translate-y-20' : ''}`}
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black z-10"></div>
+                        <div className="absolute top-20 left-20 z-20 opacity-20 group-hover:opacity-100 transition-opacity duration-700">
+                            <span className="text-8xl font-black text-white/5 tracking-tighter">0{i+1}</span>
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center opacity-30 group-hover:opacity-10 group-hover:scale-125 transition-all duration-1000">
+                             <div className="text-blue-500 transform -rotate-12 scale-150">
+                                {agent.icon}
+                             </div>
+                        </div>
+                        <div className="absolute bottom-20 left-20 right-20 z-20">
+                            <h3 className="text-4xl font-black text-white mb-6 uppercase tracking-tighter leading-none">{agent.title}</h3>
+                            <div className="h-1 w-0 group-hover:w-full bg-blue-500 transition-all duration-700 mb-6"></div>
+                            <p className="text-white/40 mb-10 text-lg font-light leading-relaxed opacity-0 group-hover:opacity-100 transform translate-y-10 group-hover:translate-y-0 transition-all duration-700">
+                                {agent.description}
+                            </p>
+                            <div className="inline-flex items-center text-[10px] font-black tracking-[0.5em] text-blue-400 uppercase">
+                                ENTER UNIT <ArrowRight size={14} className="ml-4 group-hover:translate-x-4 transition-transform" />
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
-    </footer>
+      </section>
+    </div>
+  );
 
-</body>
-</html>
+  const AgentDetailPage = () => (
+    <div className="min-h-screen pt-40 pb-24 bg-black px-10">
+      <div className="max-w-[1400px] mx-auto">
+        <button 
+          onClick={() => setCurrentPage('agents')}
+          className="group flex items-center text-[10px] font-black tracking-[0.5em] text-white/40 uppercase mb-32 hover:text-blue-500 transition"
+        >
+          <ArrowRight className="rotate-180 mr-4 group-hover:-translate-x-4 transition-transform" /> RETURN TO GENESIS
+        </button>
+
+        <div className="grid lg:grid-cols-2 gap-32 items-center">
+          <div>
+            <div className="w-32 h-32 bg-blue-600 rounded-[2.5rem] flex items-center justify-center text-white mb-16 shadow-[0_0_80px_rgba(37,99,235,0.3)]">
+                {selectedAgent.icon}
+            </div>
+            <h1 className="text-7xl md:text-[10rem] font-black text-white uppercase tracking-tighter leading-[0.8] mb-16">
+              {selectedAgent.title}
+            </h1>
+            <p className="text-3xl text-white/40 font-light italic leading-relaxed border-l-4 border-blue-500 pl-10 mb-20">
+              "{selectedAgent.description}"
+            </p>
+            <div className="grid grid-cols-3 gap-10">
+               {[
+                   { l: "UPTIME", v: "99.9%" },
+                   { l: "COGNITIVE SPEED", v: "0.1ms" },
+                   { l: "LEARNING", v: "Active" }
+               ].map((stat, i) => (
+                   <div key={i}>
+                       <span className="block text-[9px] font-black text-blue-500 uppercase tracking-widest mb-2">{stat.l}</span>
+                       <span className="text-white text-2xl font-black">{stat.v}</span>
+                   </div>
+               ))}
+            </div>
+          </div>
+
+          <div className="relative group">
+              <div className="absolute inset-0 bg-blue-500/20 blur-[150px] pointer-events-none"></div>
+              <div className="relative bg-white/[0.02] backdrop-blur-3xl border border-white/10 p-20 rounded-[4rem]">
+                 <h2 className="text-3xl font-black text-white mb-12 uppercase tracking-tighter">PROTOCOLES D'EXÉCUTION</h2>
+                 <p className="text-white/60 text-xl font-light leading-relaxed mb-16">
+                   {selectedAgent.details}
+                 </p>
+                 <div className="space-y-8 mb-20">
+                    {["Deep Learning Integration", "256-bit Encryption", "Real-time Adaptation"].map((item, i) => (
+                        <div key={i} className="flex items-center space-x-6 group/item">
+                            <div className="w-3 h-3 border border-blue-500 group-hover/item:bg-blue-500 transition-colors"></div>
+                            <span className="text-xs font-black tracking-[0.3em] uppercase text-white/80">{item}</span>
+                        </div>
+                    ))}
+                 </div>
+                 <button 
+                   onClick={() => setCurrentPage('contact')}
+                   className="w-full py-8 bg-blue-600 text-white font-black text-xl uppercase tracking-tighter rounded-full hover:bg-white hover:text-black transition-all duration-500 transform hover:scale-105"
+                 >
+                    DÉPLOYER L'UNITÉ
+                 </button>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const ContactPage = () => (
+    <div className="min-h-screen pt-40 pb-24 bg-black px-10 flex items-center">
+        <div className="max-w-[1800px] mx-auto grid lg:grid-cols-2 gap-32 w-full">
+            <div>
+                <h1 className="text-[clamp(4rem,10vw,14rem)] font-black text-white uppercase tracking-tighter leading-[0.8] mb-16">
+                    TIME TO <br /><span className="text-blue-500 italic">EVOLVE.</span>
+                </h1>
+                <div className="space-y-16">
+                    <div>
+                        <span className="text-blue-500 font-black tracking-[0.5em] uppercase text-[10px] block mb-4">Neural Signal</span>
+                        <p className="text-4xl text-white font-black hover:text-blue-400 transition-colors cursor-pointer tracking-tighter">agence@widiia.fr</p>
+                    </div>
+                    <div>
+                        <span className="text-blue-500 font-black tracking-[0.5em] uppercase text-[10px] block mb-4">Frequency</span>
+                        <p className="text-4xl text-white font-black hover:text-blue-400 transition-colors cursor-pointer tracking-tighter">07 67 94 07 89</p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="bg-white/[0.02] p-16 md:p-24 rounded-[5rem] border border-white/5 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 blur-[150px] group-hover:bg-blue-600/20 transition-all duration-1000"></div>
+                <form className="relative z-10 space-y-12" onSubmit={e => e.preventDefault()}>
+                    <div className="space-y-8">
+                        <div className="relative">
+                            <input type="text" className="w-full bg-transparent border-b border-white/10 py-6 text-3xl font-black text-white placeholder:text-white/5 outline-none focus:border-blue-500 transition-all peer" placeholder="IDENTITÉ" />
+                        </div>
+                        <div className="relative">
+                            <input type="email" className="w-full bg-transparent border-b border-white/10 py-6 text-3xl font-black text-white placeholder:text-white/5 outline-none focus:border-blue-500 transition-all peer" placeholder="CANAL EMAIL" />
+                        </div>
+                        <div className="relative">
+                            <textarea className="w-full bg-transparent border-b border-white/10 py-6 text-3xl font-black text-white placeholder:text-white/5 outline-none focus:border-blue-500 transition-all resize-none peer" placeholder="PROJET MISSION" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <button className="group relative px-16 py-8 bg-white text-black font-black text-2xl uppercase tracking-tighter rounded-none hover:bg-blue-600 hover:text-white transition-all overflow-hidden w-full md:w-auto">
+                        <span className="relative z-10">TRANSMETTRE</span>
+                        <div className="absolute inset-0 bg-blue-600 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+  );
+
+  const Footer = () => (
+    <footer className="bg-black border-t border-white/5 py-40 px-10 relative overflow-hidden">
+      <div className="max-w-[1800px] mx-auto grid md:grid-cols-12 gap-20 items-end relative z-10">
+        <div className="md:col-span-6">
+            <div className="flex items-center space-x-6 mb-12">
+                <Logo className="w-20 h-20" />
+                <span className="text-4xl font-black tracking-[0.3em]">WIDIIA</span>
+            </div>
+            <p className="text-white/20 text-sm font-black tracking-[0.5em] uppercase leading-relaxed max-w-sm">
+                Engineering the next era of autonomous performance.
+            </p>
+        </div>
+        
+        <div className="md:col-span-6 flex flex-col md:items-end">
+            <div className="flex space-x-12 mb-20">
+                {['INSTAGRAM', 'LINKEDIN', 'TWITTER'].map(social => (
+                    <button key={social} className="text-[10px] font-black tracking-[0.5em] text-white/40 hover:text-blue-500 transition">{social}</button>
+                ))}
+            </div>
+            <p className="text-[10px] font-black tracking-[1em] text-white/10 uppercase">© 2024 WIDIIA STUDIO • ALL RIGHTS RESERVED</p>
+        </div>
+      </div>
+      <div className="absolute bottom-[-5vw] left-0 w-full text-[20vw] font-black text-white/[0.01] leading-none select-none pointer-events-none whitespace-nowrap">
+          WIDIIA ARCHIVE NEURAL DATA
+      </div>
+    </footer>
+  );
+
+  return (
+    <div className="min-h-screen bg-black text-white selection:bg-blue-600 selection:text-white scroll-smooth">
+      <Navbar />
+      <main>
+        {currentPage === 'home' && <HomePage />}
+        {currentPage === 'agents' && <HomePage />}
+        {currentPage === 'agent-detail' && <AgentDetailPage />}
+        {currentPage === 'contact' && <ContactPage />}
+      </main>
+      <Footer />
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
+        * { cursor: crosshair !important; }
+
+        body { 
+          font-family: 'Space Grotesk', sans-serif;
+          background: #000;
+          overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, .font-black {
+          font-family: 'Syncopate', sans-serif;
+        }
+
+        .outline-text {
+          color: transparent;
+          -webkit-text-stroke: 1px rgba(255,255,255,0.1);
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          33% { transform: translate(10px, -20px) rotate(2deg); }
+          66% { transform: translate(-10px, 10px) rotate(-1deg); }
+        }
+        .animate-float {
+          animation: float 10s ease-in-out infinite;
+        }
+
+        @keyframes spin-slow {
+          from { transform: translate(-50%, -50%) rotate(0deg); }
+          to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 30s linear infinite;
+        }
+
+        @keyframes spin-reverse-slow {
+          from { transform: translate(-50%, -50%) rotate(360deg); }
+          to { transform: translate(-50%, -50%) rotate(0deg); }
+        }
+        .animate-spin-reverse-slow {
+          animation: spin-reverse-slow 20s linear infinite;
+        }
+
+        .animate-gradient-x {
+          background-size: 200% 200%;
+          animation: gradient-move 5s ease infinite;
+        }
+
+        @keyframes gradient-move {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
+        ::-webkit-scrollbar {
+          width: 2px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: #2563eb;
+        }
+      `}} />
+    </div>
+  );
+};
+
+export default App;import React, { useState, useEffect, useRef } from 'react';
+import { 
+  MessageSquare, 
+  TrendingUp, 
+  Mail, 
+  ShieldCheck, 
+  Phone, 
+  Mail as MailIcon, 
+  Menu, 
+  X, 
+  ArrowRight,
+  Zap,
+  Cpu,
+  Search,
+  Code2,
+  Rocket,
+  ChevronDown,
+  ExternalLink
+} from 'lucide-react';
+
+// --- Configuration des Agents ---
+const AGENTS = [
+  {
+    id: 'sav',
+    title: 'Agent SAV',
+    icon: <MessageSquare className="w-8 h-8" />,
+    description: "L'IA qui transforme chaque plainte en une expérience client mémorable.",
+    details: "Nos agents SAV gèrent les réclamations, répondent aux questions fréquentes et escaladent les problèmes complexes. Réduction des coûts de support de 60%."
+  },
+  {
+    id: 'prospection',
+    title: 'Agent de Prospection',
+    icon: <TrendingUp className="w-8 h-8" />,
+    description: "Une machine de guerre commerciale qui chasse 24h/24 sans jamais se fatiguer.",
+    details: "Analyse des bases de données, envoi de messages personnalisés et prise de rendez-vous avec les prospects qualifiés uniquement."
+  },
+  {
+    id: 'commande-mail',
+    title: 'Agent Commande Mail',
+    icon: <Mail className="w-8 h-8" />,
+    description: "L'automatisation ultime du back-office. Du mail au CRM en une seconde.",
+    details: "Extraction automatique des données de commandes reçues par email et injection directe dans votre système de gestion sans aucune erreur humaine."
+  }
+];
+
+const App = () => {
+  const [currentPage, setCurrentPage] = useState('home');
+  const [selectedAgent, setSelectedAgent] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    const handleMouseMove = (e) => setMousePos({ x: e.clientX, y: e.clientY });
+    
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  const Logo = ({ className = "w-10 h-10" }) => (
+    <div className={`${className} relative group`}>
+      <div className="absolute inset-0 bg-blue-500 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
+      <img 
+        src="image_986a0a.png" 
+        alt="Widiia Logo" 
+        className="w-full h-full object-contain relative z-10 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12"
+      />
+    </div>
+  );
+
+  const Navbar = () => (
+    <nav className={`fixed w-full z-[100] transition-all duration-700 ${scrollY > 50 ? 'py-4 bg-black/80 backdrop-blur-2xl border-b border-white/5' : 'py-10 bg-transparent'}`}>
+      <div className="max-w-[1800px] mx-auto px-10 flex justify-between items-center">
+        <div className="flex items-center cursor-pointer group" onClick={() => setCurrentPage('home')}>
+          <Logo className="w-14 h-14 mr-4" />
+          <div className="flex flex-col">
+            <span className="text-3xl font-black tracking-[0.3em] text-white leading-none group-hover:text-blue-500 transition-colors">WIDIIA</span>
+            <span className="text-[9px] tracking-[0.6em] text-blue-400/60 font-bold uppercase">Neural Intelligence</span>
+          </div>
+        </div>
+        
+        <div className="hidden lg:flex items-center space-x-16">
+          {['home', 'agents', 'contact'].map((page) => (
+            <button 
+              key={page}
+              onClick={() => setCurrentPage(page)} 
+              className="relative py-2 group overflow-hidden"
+            >
+              <span className={`text-[11px] tracking-[0.4em] uppercase font-black transition-all ${currentPage === page ? 'text-white' : 'text-white/40 group-hover:text-white'}`}>
+                {page === 'home' ? '// GENESIS' : page === 'agents' ? '// THE FLEET' : '// CONTACT'}
+              </span>
+              <span className={`absolute bottom-0 left-0 h-[2px] bg-blue-500 transition-all duration-500 ${currentPage === page ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+            </button>
+          ))}
+          <button 
+            onClick={() => setCurrentPage('contact')}
+            className="group relative px-10 py-4 bg-white text-black font-black text-[10px] tracking-[0.4em] uppercase rounded-none transition-all hover:bg-blue-600 hover:text-white overflow-hidden"
+          >
+            <span className="relative z-10">UPGRADE NOW</span>
+            <div className="absolute inset-0 bg-blue-500 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+          </button>
+        </div>
+
+        <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden text-white">
+          {isMenuOpen ? <X size={32} /> : <Menu size={32} />}
+        </button>
+      </div>
+    </nav>
+  );
+
+  const HomePage = () => (
+    <div className="relative bg-black select-none">
+      {/* Dynamic Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div 
+          className="absolute w-[80vw] h-[80vw] bg-blue-600/10 rounded-full blur-[180px] transition-transform duration-1000 ease-out"
+          style={{ 
+            transform: `translate(${mousePos.x / 15}px, ${mousePos.y / 15}px)`,
+            top: '-20%',
+            right: '-10%'
+          }}
+        ></div>
+        <div 
+          className="absolute w-[60vw] h-[60vw] bg-pink-600/5 rounded-full blur-[150px] transition-transform duration-1000 ease-out"
+          style={{ 
+            transform: `translate(${-mousePos.x / 20}px, ${-mousePos.y / 20}px)`,
+            bottom: '-10%',
+            left: '-10%'
+          }}
+        ></div>
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 mix-blend-overlay"></div>
+      </div>
+
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center pointer-events-none opacity-[0.03] select-none">
+          <h2 className="text-[25vw] font-black leading-none tracking-tighter">WIDIIA</h2>
+        </div>
+
+        <div className="max-w-[1800px] mx-auto px-10 z-10 grid lg:grid-cols-12 gap-10 items-center">
+          <div className="lg:col-span-7">
+            <div className="flex items-center space-x-4 mb-10">
+              <div className="h-[1px] w-20 bg-blue-500/50"></div>
+              <span className="text-[10px] font-black tracking-[0.8em] text-blue-400 uppercase">Beyond Automation</span>
+            </div>
+            <h1 className="text-[clamp(3rem,8vw,10rem)] font-black text-white leading-[0.85] tracking-tighter mb-12">
+              L'IA QUI <br />
+              <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-100 to-white animate-gradient-x">TRANSCENDE.</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-white/40 max-w-xl mb-16 font-light leading-relaxed">
+              WIDIIA fusionne l'ingénierie cognitive et le design d'élite pour créer des agents qui redéfinissent la productivité mondiale.
+            </p>
+            <div className="flex items-center space-x-12">
+              <button 
+                onClick={() => setCurrentPage('contact')}
+                className="group relative flex items-center space-x-6"
+              >
+                <div className="w-20 h-20 rounded-full border border-white/20 flex items-center justify-center group-hover:scale-110 group-hover:border-blue-500 transition-all duration-500">
+                  <ArrowRight size={32} className="group-hover:translate-x-2 transition-transform" />
+                </div>
+                <span className="text-sm font-black tracking-[0.5em] uppercase">Initialiser</span>
+              </button>
+            </div>
+          </div>
+          
+          <div className="lg:col-span-5 relative flex justify-center">
+            <div className="relative w-full max-w-lg aspect-square">
+                <div className="absolute inset-0 bg-blue-500/20 blur-[120px] rounded-full animate-pulse"></div>
+                <img 
+                    src="image_986a0a.png" 
+                    alt="Logo Core" 
+                    className="w-full h-full object-contain relative z-10 animate-float brightness-110 contrast-125" 
+                />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] border border-white/5 rounded-full animate-spin-slow"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110%] h-[110%] border border-white/10 rounded-full animate-spin-reverse-slow"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* The Master Process Section - High Contrast */}
+      <section className="py-60 relative z-10">
+        <div className="max-w-[1800px] mx-auto px-10">
+          <div className="grid lg:grid-cols-12 gap-20 items-start">
+            <div className="lg:col-span-5 sticky top-40">
+              <h2 className="text-[clamp(3rem,6vw,8rem)] font-black text-white uppercase tracking-tighter leading-[0.9] mb-10">
+                L'ART DE <br /><span className="text-blue-500">L'ALGORITHME</span>
+              </h2>
+              <div className="w-40 h-[2px] bg-gradient-to-r from-blue-600 to-transparent mb-10"></div>
+              <p className="text-white/40 text-xl font-light leading-relaxed max-w-md">
+                Chaque agent est une pièce unique, sculptée selon les besoins spécifiques de votre infrastructure digitale.
+              </p>
+            </div>
+
+            <div className="lg:col-span-7 space-y-32">
+              <div className="relative group">
+                <div className="absolute -inset-10 bg-blue-600/10 blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                <div className="relative overflow-hidden rounded-[4rem] border border-white/10 bg-slate-900 shadow-2xl">
+                    <img 
+                        src="image_995e11.png" 
+                        alt="Processus Widiia" 
+                        className="w-full h-auto scale-110 group-hover:scale-100 transition-transform duration-1000 brightness-75 hover:brightness-100"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex flex-col justify-end p-16">
+                        <span className="text-blue-400 font-black tracking-[0.5em] uppercase text-[10px] mb-4">Neural Map v2.1</span>
+                        <h3 className="text-4xl font-black text-white uppercase tracking-tighter">Vision Systémique</h3>
+                    </div>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-10">
+                {[
+                  { title: "Audit Immersif", desc: "Immersion totale dans votre workflow pour identifier les goulots d'étranglement invisibles." },
+                  { title: "Déploiement Quantique", desc: "Mise en service ultra-rapide avec une scalabilité sans limites." }
+                ].map((item, i) => (
+                  <div key={i} className="p-10 bg-white/5 border border-white/5 rounded-[3rem] hover:border-blue-500/30 transition-all duration-500 group">
+                    <div className="w-12 h-12 bg-blue-500 rounded-2xl mb-8 flex items-center justify-center group-hover:rotate-[360deg] transition-transform duration-700">
+                      <Zap size={24} />
+                    </div>
+                    <h4 className="text-2xl font-black text-white mb-4 uppercase tracking-tighter">{item.title}</h4>
+                    <p className="text-white/40 leading-relaxed font-light">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Fleet Section - Grid Non-Conventionnel */}
+      <section className="py-60 relative bg-white/5 overflow-hidden">
+        <div className="max-w-[1800px] mx-auto px-10 relative z-10">
+            <div className="mb-40">
+                <span className="text-blue-500 font-black tracking-[1em] uppercase text-[10px] block mb-6">Units Available</span>
+                <h2 className="text-[clamp(3rem,8vw,12rem)] font-black text-white uppercase tracking-tighter leading-none outline-text">LA FLOTTE.</h2>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-4">
+                {AGENTS.map((agent, i) => (
+                    <div 
+                        key={agent.id}
+                        onClick={() => { setSelectedAgent(agent); setCurrentPage('agent-detail'); }}
+                        className={`group relative h-[700px] overflow-hidden bg-slate-950 border border-white/5 hover:border-blue-500/50 transition-all duration-700 cursor-pointer ${i === 1 ? 'md:-translate-y-20' : ''}`}
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black z-10"></div>
+                        <div className="absolute top-20 left-20 z-20 opacity-20 group-hover:opacity-100 transition-opacity duration-700">
+                            <span className="text-8xl font-black text-white/5 tracking-tighter">0{i+1}</span>
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center opacity-30 group-hover:opacity-10 group-hover:scale-125 transition-all duration-1000">
+                             <div className="text-blue-500 transform -rotate-12 scale-150">
+                                {agent.icon}
+                             </div>
+                        </div>
+                        <div className="absolute bottom-20 left-20 right-20 z-20">
+                            <h3 className="text-4xl font-black text-white mb-6 uppercase tracking-tighter leading-none">{agent.title}</h3>
+                            <div className="h-1 w-0 group-hover:w-full bg-blue-500 transition-all duration-700 mb-6"></div>
+                            <p className="text-white/40 mb-10 text-lg font-light leading-relaxed opacity-0 group-hover:opacity-100 transform translate-y-10 group-hover:translate-y-0 transition-all duration-700">
+                                {agent.description}
+                            </p>
+                            <div className="inline-flex items-center text-[10px] font-black tracking-[0.5em] text-blue-400 uppercase">
+                                ENTER UNIT <ArrowRight size={14} className="ml-4 group-hover:translate-x-4 transition-transform" />
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+      </section>
+    </div>
+  );
+
+  const AgentDetailPage = () => (
+    <div className="min-h-screen pt-40 pb-24 bg-black px-10">
+      <div className="max-w-[1400px] mx-auto">
+        <button 
+          onClick={() => setCurrentPage('agents')}
+          className="group flex items-center text-[10px] font-black tracking-[0.5em] text-white/40 uppercase mb-32 hover:text-blue-500 transition"
+        >
+          <ArrowRight className="rotate-180 mr-4 group-hover:-translate-x-4 transition-transform" /> RETURN TO GENESIS
+        </button>
+
+        <div className="grid lg:grid-cols-2 gap-32 items-center">
+          <div>
+            <div className="w-32 h-32 bg-blue-600 rounded-[2.5rem] flex items-center justify-center text-white mb-16 shadow-[0_0_80px_rgba(37,99,235,0.3)]">
+                {selectedAgent.icon}
+            </div>
+            <h1 className="text-7xl md:text-[10rem] font-black text-white uppercase tracking-tighter leading-[0.8] mb-16">
+              {selectedAgent.title}
+            </h1>
+            <p className="text-3xl text-white/40 font-light italic leading-relaxed border-l-4 border-blue-500 pl-10 mb-20">
+              "{selectedAgent.description}"
+            </p>
+            <div className="grid grid-cols-3 gap-10">
+               {[
+                   { l: "UPTIME", v: "99.9%" },
+                   { l: "COGNITIVE SPEED", v: "0.1ms" },
+                   { l: "LEARNING", v: "Active" }
+               ].map((stat, i) => (
+                   <div key={i}>
+                       <span className="block text-[9px] font-black text-blue-500 uppercase tracking-widest mb-2">{stat.l}</span>
+                       <span className="text-white text-2xl font-black">{stat.v}</span>
+                   </div>
+               ))}
+            </div>
+          </div>
+
+          <div className="relative group">
+              <div className="absolute inset-0 bg-blue-500/20 blur-[150px] pointer-events-none"></div>
+              <div className="relative bg-white/[0.02] backdrop-blur-3xl border border-white/10 p-20 rounded-[4rem]">
+                 <h2 className="text-3xl font-black text-white mb-12 uppercase tracking-tighter">PROTOCOLES D'EXÉCUTION</h2>
+                 <p className="text-white/60 text-xl font-light leading-relaxed mb-16">
+                   {selectedAgent.details}
+                 </p>
+                 <div className="space-y-8 mb-20">
+                    {["Deep Learning Integration", "256-bit Encryption", "Real-time Adaptation"].map((item, i) => (
+                        <div key={i} className="flex items-center space-x-6 group/item">
+                            <div className="w-3 h-3 border border-blue-500 group-hover/item:bg-blue-500 transition-colors"></div>
+                            <span className="text-xs font-black tracking-[0.3em] uppercase text-white/80">{item}</span>
+                        </div>
+                    ))}
+                 </div>
+                 <button 
+                   onClick={() => setCurrentPage('contact')}
+                   className="w-full py-8 bg-blue-600 text-white font-black text-xl uppercase tracking-tighter rounded-full hover:bg-white hover:text-black transition-all duration-500 transform hover:scale-105"
+                 >
+                    DÉPLOYER L'UNITÉ
+                 </button>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const ContactPage = () => (
+    <div className="min-h-screen pt-40 pb-24 bg-black px-10 flex items-center">
+        <div className="max-w-[1800px] mx-auto grid lg:grid-cols-2 gap-32 w-full">
+            <div>
+                <h1 className="text-[clamp(4rem,10vw,14rem)] font-black text-white uppercase tracking-tighter leading-[0.8] mb-16">
+                    TIME TO <br /><span className="text-blue-500 italic">EVOLVE.</span>
+                </h1>
+                <div className="space-y-16">
+                    <div>
+                        <span className="text-blue-500 font-black tracking-[0.5em] uppercase text-[10px] block mb-4">Neural Signal</span>
+                        <p className="text-4xl text-white font-black hover:text-blue-400 transition-colors cursor-pointer tracking-tighter">agence@widiia.fr</p>
+                    </div>
+                    <div>
+                        <span className="text-blue-500 font-black tracking-[0.5em] uppercase text-[10px] block mb-4">Frequency</span>
+                        <p className="text-4xl text-white font-black hover:text-blue-400 transition-colors cursor-pointer tracking-tighter">07 67 94 07 89</p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="bg-white/[0.02] p-16 md:p-24 rounded-[5rem] border border-white/5 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 blur-[150px] group-hover:bg-blue-600/20 transition-all duration-1000"></div>
+                <form className="relative z-10 space-y-12" onSubmit={e => e.preventDefault()}>
+                    <div className="space-y-8">
+                        <div className="relative">
+                            <input type="text" className="w-full bg-transparent border-b border-white/10 py-6 text-3xl font-black text-white placeholder:text-white/5 outline-none focus:border-blue-500 transition-all peer" placeholder="IDENTITÉ" />
+                        </div>
+                        <div className="relative">
+                            <input type="email" className="w-full bg-transparent border-b border-white/10 py-6 text-3xl font-black text-white placeholder:text-white/5 outline-none focus:border-blue-500 transition-all peer" placeholder="CANAL EMAIL" />
+                        </div>
+                        <div className="relative">
+                            <textarea className="w-full bg-transparent border-b border-white/10 py-6 text-3xl font-black text-white placeholder:text-white/5 outline-none focus:border-blue-500 transition-all resize-none peer" placeholder="PROJET MISSION" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <button className="group relative px-16 py-8 bg-white text-black font-black text-2xl uppercase tracking-tighter rounded-none hover:bg-blue-600 hover:text-white transition-all overflow-hidden w-full md:w-auto">
+                        <span className="relative z-10">TRANSMETTRE</span>
+                        <div className="absolute inset-0 bg-blue-600 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+  );
+
+  const Footer = () => (
+    <footer className="bg-black border-t border-white/5 py-40 px-10 relative overflow-hidden">
+      <div className="max-w-[1800px] mx-auto grid md:grid-cols-12 gap-20 items-end relative z-10">
+        <div className="md:col-span-6">
+            <div className="flex items-center space-x-6 mb-12">
+                <Logo className="w-20 h-20" />
+                <span className="text-4xl font-black tracking-[0.3em]">WIDIIA</span>
+            </div>
+            <p className="text-white/20 text-sm font-black tracking-[0.5em] uppercase leading-relaxed max-w-sm">
+                Engineering the next era of autonomous performance.
+            </p>
+        </div>
+        
+        <div className="md:col-span-6 flex flex-col md:items-end">
+            <div className="flex space-x-12 mb-20">
+                {['INSTAGRAM', 'LINKEDIN', 'TWITTER'].map(social => (
+                    <button key={social} className="text-[10px] font-black tracking-[0.5em] text-white/40 hover:text-blue-500 transition">{social}</button>
+                ))}
+            </div>
+            <p className="text-[10px] font-black tracking-[1em] text-white/10 uppercase">© 2024 WIDIIA STUDIO • ALL RIGHTS RESERVED</p>
+        </div>
+      </div>
+      <div className="absolute bottom-[-5vw] left-0 w-full text-[20vw] font-black text-white/[0.01] leading-none select-none pointer-events-none whitespace-nowrap">
+          WIDIIA ARCHIVE NEURAL DATA
+      </div>
+    </footer>
+  );
+
+  return (
+    <div className="min-h-screen bg-black text-white selection:bg-blue-600 selection:text-white scroll-smooth">
+      <Navbar />
+      <main>
+        {currentPage === 'home' && <HomePage />}
+        {currentPage === 'agents' && <HomePage />}
+        {currentPage === 'agent-detail' && <AgentDetailPage />}
+        {currentPage === 'contact' && <ContactPage />}
+      </main>
+      <Footer />
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
+        * { cursor: crosshair !important; }
+
+        body { 
+          font-family: 'Space Grotesk', sans-serif;
+          background: #000;
+          overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, .font-black {
+          font-family: 'Syncopate', sans-serif;
+        }
+
+        .outline-text {
+          color: transparent;
+          -webkit-text-stroke: 1px rgba(255,255,255,0.1);
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translate(0, 0) rotate(0deg); }
+          33% { transform: translate(10px, -20px) rotate(2deg); }
+          66% { transform: translate(-10px, 10px) rotate(-1deg); }
+        }
+        .animate-float {
+          animation: float 10s ease-in-out infinite;
+        }
+
+        @keyframes spin-slow {
+          from { transform: translate(-50%, -50%) rotate(0deg); }
+          to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 30s linear infinite;
+        }
+
+        @keyframes spin-reverse-slow {
+          from { transform: translate(-50%, -50%) rotate(360deg); }
+          to { transform: translate(-50%, -50%) rotate(0deg); }
+        }
+        .animate-spin-reverse-slow {
+          animation: spin-reverse-slow 20s linear infinite;
+        }
+
+        .animate-gradient-x {
+          background-size: 200% 200%;
+          animation: gradient-move 5s ease infinite;
+        }
+
+        @keyframes gradient-move {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
+        ::-webkit-scrollbar {
+          width: 2px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: #2563eb;
+        }
+      `}} />
+    </div>
+  );
+};
+
+export default App;
