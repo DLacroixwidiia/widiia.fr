@@ -1,182 +1,146 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
-import { Button } from '@/components/ui/button';
-import { Menu, X, ArrowRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widiia - Agence d'Automatisation IA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .backdrop-blur-xl { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+        .bg-gradient-pink { background: linear-gradient(to right, #ec4899, #f43f5e); }
+        .text-gradient { background: linear-gradient(to right, #f472b6, #fb7185); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body class="bg-[#020617] text-white selection:bg-pink-500/30">
 
-export default function Layout({ children }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const location = useLocation();
-
-  const navigation = [
-    { name: 'Accueil', href: createPageUrl('Home') },
-    { name: 'Nos Agents', href: createPageUrl('Agents') },
-    { name: 'Contact', href: createPageUrl('BookDiagnostic') },
-  ];
-
-  const isActive = (href) => location.pathname === href;
-
-  return (
-    <div className="min-h-screen bg-slate-950">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/50">
-        <nav className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            {/* Logo */}
-            <Link to={createPageUrl('Home')} className="flex items-center gap-3">
-              <img 
-                src="https://raw.githubusercontent.com/placeholder/logo.png" 
-                alt="Widiia" 
-                className="h-10 w-auto"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'flex';
-                }}
-              />
-              <div className="flex items-center gap-2" style={{display: 'flex'}}>
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">W</span>
+    <header class="fixed top-0 left-0 right-0 z-50 bg-[#020617]/80 backdrop-blur-xl border-b border-slate-800/50">
+        <nav class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-pink flex items-center justify-center shadow-lg shadow-pink-500/20">
+                        <span class="text-white font-bold text-xl">W</span>
+                    </div>
+                    <span class="text-2xl font-bold tracking-tight">Widiia</span>
                 </div>
-                <span className="text-2xl font-bold text-white">Widiia</span>
-              </div>
-            </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-8">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`text-sm font-medium transition-colors ${
-                    isActive(item.href)
-                      ? 'text-pink-400'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#" class="text-sm font-medium text-pink-400">Accueil</a>
+                    <a href="#" class="text-sm font-medium text-slate-400 hover:text-white transition-colors">Nos Agents</a>
+                    <a href="#" class="text-sm font-medium text-slate-400 hover:text-white transition-colors">Contact</a>
+                </div>
+
+                <div class="hidden md:block">
+                    <a href="#" class="bg-gradient-pink hover:opacity-90 text-white px-6 py-2.5 rounded-full text-sm font-semibold flex items-center gap-2 transition-all">
+                        Diagnostic gratuit
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
             </div>
-
-            {/* CTA Button */}
-            <div className="hidden md:block">
-              <Link to={createPageUrl('BookDiagnostic')}>
-                <Button className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full px-6">
-                  Diagnostic gratuit
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-
-            {/* Mobile menu button */}
-            <button
-              className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
         </nav>
+    </header>
 
-        {/* Mobile Menu */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden border-t border-slate-800 bg-slate-950/95 backdrop-blur-xl"
-            >
-              <div className="px-6 py-6 space-y-4">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`block text-lg font-medium py-2 ${
-                      isActive(item.href)
-                        ? 'text-pink-400'
-                        : 'text-slate-300'
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
-                <Link 
-                  to={createPageUrl('BookDiagnostic')}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Button className="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full mt-4">
-                    Diagnostic gratuit
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </header>
-
-      {/* Main Content */}
-      <main className="pt-20">
-        {children}
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-slate-950 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
-          <div className="grid md:grid-cols-4 gap-12">
-            {/* Brand */}
-            <div className="md:col-span-2">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">W</span>
-                </div>
-                <span className="text-2xl font-bold text-white">Widiia</span>
-              </div>
-              <p className="text-slate-400 max-w-sm leading-relaxed">
-                Nous créons des agents IA sur-mesure pour automatiser et améliorer votre relation client.
-              </p>
+    <main class="pt-32 pb-20">
+        
+        <section class="max-w-7xl mx-auto px-6 text-center mb-20">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-pink-500/30 bg-pink-500/5 text-pink-400 text-xs font-medium mb-8">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
+                </span>
+                Nos solutions IA
             </div>
-
-            {/* Links */}
-            <div>
-              <h3 className="text-white font-semibold mb-4">Navigation</h3>
-              <ul className="space-y-3">
-                {navigation.map((item) => (
-                  <li key={item.name}>
-                    <Link 
-                      to={item.href}
-                      className="text-slate-400 hover:text-pink-400 transition-colors"
-                    >
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Contact */}
-            <div>
-              <h3 className="text-white font-semibold mb-4">Contact</h3>
-              <ul className="space-y-3 text-slate-400">
-                <li>contact@widiia.com</li>
-                <li>+33 1 23 45 67 89</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-12 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-slate-500 text-sm">
-              © {new Date().getFullYear()} Widiia. Tous droits réservés.
+            <h1 class="text-5xl md:text-7xl font-bold mb-8 tracking-tight">
+                Nos <span class="text-gradient">Agents IA</span>
+            </h1>
+            <p class="text-slate-400 max-w-2xl mx-auto text-lg leading-relaxed">
+                Découvrez notre gamme d'agents intelligents conçus pour automatiser et optimiser chaque aspect de votre relation client.
             </p>
-            <div className="flex gap-6 text-sm text-slate-500">
-              <a href="#" className="hover:text-pink-400 transition-colors">Mentions légales</a>
-              <a href="#" className="hover:text-pink-400 transition-colors">Politique de confidentialité</a>
+        </section>
+
+        <section class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <div class="group bg-slate-900/40 border border-slate-800 p-8 rounded-[2rem] hover:border-pink-500/50 transition-all duration-300">
+                <div class="bg-blue-500/10 w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-headset text-blue-400 text-2xl"></i>
+                </div>
+                <span class="bg-pink-500/10 text-pink-400 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Populaire</span>
+                <h3 class="text-2xl font-bold mt-4 mb-4">Agent SAV</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-6">Gérez votre service après-vente 24h/24 avec un agent IA capable de résoudre les problèmes courants et d'escalader intelligemment.</p>
+                <ul class="space-y-3 text-sm text-slate-500">
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-pink-500"></i> Réponses instantanées</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-pink-500"></i> Suivi des livraisons</li>
+                </ul>
             </div>
-          </div>
+
+            <div class="group bg-slate-900/40 border border-slate-800 p-8 rounded-[2rem] hover:border-pink-500/50 transition-all duration-300">
+                <div class="bg-emerald-500/10 w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-bullseye text-emerald-400 text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">Agent de Prospection</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-6">Automatisez votre prospection commerciale avec un agent qui qualifie vos leads et prend les rendez-vous à votre place.</p>
+                <ul class="space-y-3 text-sm text-slate-500">
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-pink-500"></i> Qualification automatique</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-pink-500"></i> Envoi de messages personnalisés</li>
+                </ul>
+            </div>
+
+            <div class="group bg-slate-900/40 border border-slate-800 p-8 rounded-[2rem] hover:border-pink-500/50 transition-all duration-300">
+                <div class="bg-purple-500/10 w-14 h-14 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-envelope-open-text text-purple-400 text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">Prise de Commande Mail</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-6">Transformez vos emails en commandes automatiquement. L'agent analyse, extrait et traite les demandes reçues.</p>
+                <ul class="space-y-3 text-sm text-slate-500">
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-pink-500"></i> Analyse automatique des emails</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-circle-check text-pink-500"></i> Extraction des données</li>
+                </ul>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="bg-[#020617] border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+            <div class="grid md:grid-cols-4 gap-12">
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-pink flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">W</span>
+                        </div>
+                        <span class="text-2xl font-bold text-white">Widiia</span>
+                    </div>
+                    <p class="text-slate-400 max-w-sm leading-relaxed">
+                        Nous créons des agents IA sur-mesure pour automatiser et améliorer votre relation client.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-white font-semibold mb-6">Navigation</h3>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="#" class="text-slate-400 hover:text-pink-400 transition-colors">Accueil</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-pink-400 transition-colors">Nos Agents</a></li>
+                        <li><a href="#" class="text-slate-400 hover:text-pink-400 transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white font-semibold mb-6">Contact</h3>
+                    <ul class="space-y-4 text-sm text-slate-400">
+                        <li>contact@widiia.com</li>
+                        <li>+33 1 23 45 67 89</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-16 pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-slate-500 text-[13px]">
+                    © 2026 Widiia. Tous droits réservés.
+                </p>
+                <div class="flex gap-8 text-[13px] text-slate-500">
+                    <a href="#" class="hover:text-pink-400 transition-colors">Mentions légales</a>
+                    <a href="#" class="hover:text-pink-400 transition-colors">Confidentialité</a>
+                </div>
+            </div>
         </div>
-      </footer>
-    </div>
-  );
-}
+    </footer>
+
+</body>
+</html>
